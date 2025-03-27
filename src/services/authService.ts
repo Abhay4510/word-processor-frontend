@@ -1,5 +1,5 @@
 export const authService = {
   getGoogleAuthUrl: () => {
-    return "http://localhost:8800/auth/google"
+    return "https://word-processor-backend.vercel.app/auth/google"
   },
 }

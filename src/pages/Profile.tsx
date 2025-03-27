@@ -6,7 +6,6 @@ import { useLetters } from "../hooks/useLetters"
 import { api } from "../utils/api"
 
 interface UserDetails {
-  _id: string
   displayName: string
   email: string
   role: string
@@ -24,20 +23,16 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      if (!token || !user?._id) return
+      if (!token) return
 
       try {
         setLoading(true)
-        const response = await api.get(`/api/letters`, token)
-        if (response && response.length > 0) {
-          const userInfo = response[0].userId
-          setUserDetails({
-            _id: userInfo._id,
-            displayName: userInfo.displayName,
-            email: userInfo.email,
-            role: userInfo.role,
-          })
-        }
+        const response = await api.get(`/auth/user/detail`, token)
+        setUserDetails({
+          displayName: response.displayName,
+          email: response.email,
+          role: response.role
+        })
       } catch (error) {
         console.error("Failed to fetch user details:", error)
       } finally {
@@ -46,7 +41,7 @@ const Profile = () => {
     }
 
     fetchUserDetails()
-  }, [token, user])
+  }, [token])
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -70,10 +65,6 @@ const Profile = () => {
                     <h2 className="text-lg font-medium text-gray-900 mb-4">Account Information</h2>
                     <div className="bg-gray-50 p-6 rounded-lg">
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                          <p className="text-sm text-gray-500">User ID</p>
-                          <p className="font-medium">{userDetails?._id || user?._id}</p>
-                        </div>
                         <div>
                           <p className="text-sm text-gray-500">Role</p>
                           <p className="font-medium capitalize">{userDetails?.role || user?.role}</p>

@@ -37,7 +37,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         } else {
           setState({
             isAuthenticated: true,
-            user: { _id: decoded._id, role: decoded.role },
+            user: {
+              _id: decoded._id,
+              role: decoded.role,
+              name: decoded.name,
+              email: decoded.email,
+            },
             token: localToken,
             loading: false,
             error: null,
@@ -65,7 +70,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       const decoded = jwtDecode<User & { exp: number }>(token)
       setState({
         isAuthenticated: true,
-        user: { _id: decoded._id, role: decoded.role },
+        user: {
+          _id: decoded._id,
+          role: decoded.role,
+          name: decoded.name,
+          email: decoded.email,
+        },
         token,
         loading: false,
         error: null,
@@ -78,8 +88,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const logout = () => {
     localStorage.removeItem("token")
 
-    document.cookie =
-      "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;"
 
     setState({
       isAuthenticated: false,
@@ -90,9 +99,5 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     })
   }
 
-  return (
-    <AuthContext.Provider value={{ ...state, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={{ ...state, login, logout }}>{children}</AuthContext.Provider>
 }

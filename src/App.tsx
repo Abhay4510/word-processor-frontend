@@ -8,6 +8,7 @@ import Dashboard from "./pages/Dashboard";
 // import Editor from "./pages/Editor";
 import CreateLetter from "./pages/CreateLetter";
 import UpdateLetter from "./pages/UpdateLetter";
+import UserManagement from "./pages/UserManagement"
 import Profile from "./pages/Profile";
 import "./tailwind.css";
 
@@ -28,7 +29,7 @@ function App() {
                 </PrivateRoute>
               }
             />
-            
+
             <Route
               path="/create"
               element={
@@ -56,12 +57,21 @@ function App() {
               }
             />
 
+            <Route
+              path="/admin/users"
+              element={
+                <PrivateRoute>
+                  <UserManagement />
+                </PrivateRoute>
+              }
+            />
+
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
       </EditorProvider>
     </AuthProvider>
-  );
+  )
 }
 
 

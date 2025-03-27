@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom"
 import { useAuth } from "../hooks/useAuth"
 import { letterService } from "../services/letterService"
 import { LetterFormData } from "../types/letter"
-import AdvancedEditor  from "../components/Editor/TextEditor"
+import TextEditor  from "../components/Editor/TextEditor"
 import Header from "../components/Layout/Header"
 import Sidebar from "../components/Layout/Sidebar"
 
@@ -11,13 +11,14 @@ const UpdateLetter = () => {
   const { token } = useAuth()
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  
+
   const [formData, setFormData] = useState<LetterFormData>({ 
     title: "", 
     content: "" 
   })
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [savedToDrive, setSavedToDrive] = useState(false)
 
   useEffect(() => {
     const fetchLetter = async () => {
@@ -31,12 +32,14 @@ const UpdateLetter = () => {
 
       try {
         const fetchedLetter = await letterService.getLetter(token, id)
-        
+
         setFormData({
           title: fetchedLetter.title || "",
           content: fetchedLetter.content || "",
         })
-        
+
+        setSavedToDrive(fetchedLetter.savedToDrive || false)
+
         console.log("Fetched Letter:", fetchedLetter)
       } catch (error) {
         console.error("Failed to fetch letter:", error)
@@ -113,15 +116,17 @@ const UpdateLetter = () => {
               >
                 Update Draft
               </button>
-              <button
-                onClick={handleUploadToDrive}
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
-              >
-                Upload to Drive
-              </button>
+              {!savedToDrive && (
+                <button
+                  onClick={handleUploadToDrive}
+                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                >
+                  Upload to Drive
+                </button>
+              )}
             </div>
 
-            <AdvancedEditor  
+            <TextEditor  
               initialValue={formData} 
               onChange={handleEditorChange} 
             />
